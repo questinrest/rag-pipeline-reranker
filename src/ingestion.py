@@ -2,6 +2,7 @@ import os
 import re
 import pymupdf
 from typing import List, Dict
+from pathlib import Path
 from src.config import (
     CHUNK_SIZE,
     CHUNK_OVERLAP
@@ -16,10 +17,11 @@ def preprocess_text(text:str) -> str:
 
 ## load pdf
 def load_pdf(file_path : str) -> List[Dict]:
-    if not os.path.exists(file_path):
+    path = Path(file_path)
+    if not path.exists():
         print(f"Path does not exist")
     pages = []
-    reader = pymupdf.open(file_path)
+    reader = pymupdf.open(path)
 
     for page_no, page in enumerate(reader):
         page_text = page.get_text()
@@ -66,7 +68,7 @@ def chunk_page(file_path : str, chunk_size : int = CHUNK_SIZE, overlap : int = C
 
 ## preparing the chunks with more metadata for upsert
 def ingest(file_path : str) -> List[Dict]:
-    file_name = os.path.basename(file_path)
+    file_name = Path(file_path).name
     chunks = chunk_page(file_path=file_path)
 
     ready_to_embed_chunks = []

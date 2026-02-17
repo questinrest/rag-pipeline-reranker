@@ -40,7 +40,7 @@ def get_or_create_index(PINECONE_IND : str = PINECONE_INDEX_NAME,
 
 ## have to add namespace -- here in this now
 def upsert_chunks(chunks: List[Dict], index_name: str = PINECONE_INDEX_NAME, batch_size : int = BATCH_SIZE):
-    index = pc.Index(index_name)
+    index = get_or_create_index(index_name)
 
     records = []
 
@@ -57,6 +57,7 @@ def upsert_chunks(chunks: List[Dict], index_name: str = PINECONE_INDEX_NAME, bat
         index.upsert_records("example-namespace", records=batch)
 
     print(f"All chunks upserted to {index_name} and namespace.")
+    return len(records)
 
 
 
