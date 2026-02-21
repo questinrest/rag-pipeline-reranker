@@ -8,7 +8,7 @@ from src.retrieval import search_vector_db
 from src.reranker import search_vector_db_reranker
 from src.generation import generate_answer
 from src.config import PINECONE_NAMESPACE
-from src.data_models import IngestRequest, IngestResponse, QueryRequest
+from src.data_models import IngestRequest, IngestResponse, QueryRequest, QueryResponse, Source
 from fastapi.responses import PlainTextResponse
 
 app = FastAPI()
@@ -26,7 +26,6 @@ def health():
 def ingest_documents(request: IngestRequest, namespace = PINECONE_NAMESPACE):
     try:
         hash_val = compute_file_hash(request.file_path)
-
         if duplicate_exists_(namespace=namespace, source_hash=hash_val):
             return IngestResponse(
                 source_doc=request.file_path,
@@ -35,12 +34,6 @@ def ingest_documents(request: IngestRequest, namespace = PINECONE_NAMESPACE):
             )
         ready_embed_chunks = ingest(request.file_path)
 
-        if ready_embed_chunks == 0:
-            return IngestResponse(
-                source_doc=request.file_path,
-                chunks=0,
-                message= "Document already ingested",
-            )
         upserted_chunks = upsert_chunks(chunks=ready_embed_chunks, namespace=namespace)
 
         return IngestResponse(
@@ -58,13 +51,26 @@ def ingest_documents(request: IngestRequest, namespace = PINECONE_NAMESPACE):
 
 # end point for query generation
 
-@app.post("/query")
+@app.post("/query", response_model=QueryResponse)
 def query(request : QueryRequest, namespace = PINECONE_NAMESPACE):
     try:
         if request.rerank == True:
             related_docs = search_vector_db_reranker(query=request.query, namespace=namespace)
         else:
             related_docs = search_vector_db(query=request.query, namespace=namespace)
-        return PlainTextResponse(status_code = 200, content=generate_answer(query=request.query, chunks=related_docs))
+        def to_source(idx, chunk):
+            return Source(
+                source = chunk['source'],
+                page_no= chunk['page_no']
+            )
+        sources = [to_source(idx, chunk) for idx, chunk in enumerate(related_docs)]
+        
+
+        return QueryResponse(
+            answer= generate_answer(query=request.query, chunks=related_docs),
+            reference= sources,
+            rerank=request.rerank
+        )
+        #return PlainTextResponse(status_code = 200, content=generate_answer(query=request.query, chunks=related_docs))
     except Exception as e:
-        raise HTTPException(status_code=500, detail= f"{str(e)}")
+        raise HTTPException(status_code=500, detail= f"Error generating answer: {str(e)}")

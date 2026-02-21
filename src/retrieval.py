@@ -1,5 +1,8 @@
 from pinecone import Pinecone
-from src.config import PINECONE_API_KEY, PINECONE_INDEX_NAME, TOP_K, PINECONE_NAMESPACE
+from src.config import (PINECONE_API_KEY, 
+                        PINECONE_INDEX_NAME, 
+                        TOP_K, 
+                        PINECONE_NAMESPACE)
 from typing import List, Dict
 
 

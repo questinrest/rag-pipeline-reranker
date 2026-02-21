@@ -45,7 +45,8 @@ Example: The offer letter must be accepted within ten days of issuance [1], and 
 
 References:
 [1] HR Handbook 2025 for website.pdf, p.10
-[2] HR Handbook 2025 for website.pdf, p.11"""
+[2] HR Handbook 2025 for website.pdf, p.11
+"""
 
 
 

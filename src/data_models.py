@@ -21,7 +21,11 @@ class QueryRequest(BaseModel):
     query : str
     rerank : bool
 
+class Source(BaseModel):
+    source : str
+    page_no : str
 
 class QueryResponse(BaseModel):
     answer : str
-    pass
+    reference : List[Source]
+    rerank : bool

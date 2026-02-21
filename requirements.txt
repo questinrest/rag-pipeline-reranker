@@ -1,6 +1,5 @@
 python-dotenv
 ipykernel
-langchain-community
 pypdf
 PyMuPDF
 pinecone
