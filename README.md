@@ -66,7 +66,13 @@ uvicorn src.api:app --reload
 - enter namespace (create new or enter already created namespace)
 ```bash
 {
-  "file_path": "file_path" (use // in case of windows)
+  "file_path": "C:\\Desktop\\file.pdf" (If you are using Windows, make sure to escape backslashes in JSON)
+}
+```
+
+```bash
+{
+  "file_path": "/home/username/Documents/file.pdf" (Linux / macOS)
 }
 ```
 
