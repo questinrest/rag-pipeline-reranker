@@ -4,7 +4,7 @@
 
 ---
 
-## 🚀 What This Project Does
+## What This Project Does
 
 Imagine uploading your company's 200-page policy manual and then simply asking *"What is the leave encashment policy?"* — and getting a precise, cited answer back in seconds.
 
@@ -18,7 +18,7 @@ This system makes that possible. It:
 
 ---
 
-## 🧠 Architecture & Data Flow
+## Architecture & Data Flow
 
 ```mermaid
 graph TD
@@ -53,7 +53,7 @@ graph TD
 
 ---
 
-## 📈 Impact & Key Achievements
+## Impact & Key Achievements
 
 | What Was Built | Why It Matters |
 |---|---|
@@ -65,7 +65,7 @@ graph TD
 
 ---
 
-## 🔧 Problems Faced & How They Were Solved
+## Problems Faced & How They Were Solved
 
 ### 1. Duplicate documents bloating the vector index
 **Problem:** Re-uploading the same PDF created redundant vectors, inflating storage costs and degrading retrieval quality.  
@@ -85,7 +85,7 @@ graph TD
 
 ---
 
-## 💡 What I Learned
+## Key Engineering Insights
 
 - **RAG is only as good as its chunking strategy.** Chunk size and overlap profoundly impact retrieval quality — too small loses context, too large dilutes relevance scores.
 - **Reranking is a high-leverage, low-cost upgrade.** Adding a second-pass reranker on top of ANN retrieval consistently beats pure semantic search with minimal added latency.
@@ -95,7 +95,7 @@ graph TD
 
 ---
 
-## 🔭 Future Improvements
+## Future Improvements
 
 - **Async ingestion queue** — Offload chunking and embedding to Celery/RabbitMQ workers so large multi-document uploads don't block the API thread.
 - **Hybrid search (BM25 + dense)** — Combine keyword search with vector search for documents that contain exact codes, IDs, or jargon that semantic search may miss.
@@ -105,7 +105,7 @@ graph TD
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 | Layer | Technology |
 |---|---|
@@ -120,7 +120,7 @@ graph TD
 
 ---
 
-## ⚡ Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -167,7 +167,7 @@ uvicorn src.api:app --reload
 
 ---
 
-## 📖 API Reference
+## API Reference
 
 ### `POST /ingest` — Upload a Document
 
@@ -200,7 +200,7 @@ Runs a semantic search over the indexed documents and returns an LLM-generated a
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 ```text
 precision-rag-with-deduplication/
@@ -223,6 +223,6 @@ precision-rag-with-deduplication/
 
 ---
 
-## 📄 License
+## License
 
 MIT License — feel free to fork, extend, and build on top of this system.
