@@ -4,7 +4,56 @@ An enterprise-ready, high-performance Retrieval-Augmented Generation (RAG) pipel
 
 ## 🏗️ Architecture
 
-![Architecture Diagram](./architecture.png)
+```mermaid
+graph TD
+
+    %% =========================
+    %% Ingestion Pipeline
+    %% =========================
+    subgraph Ingestion Pipeline
+
+        A[Upload PDF via /ingest] --> B[Select Namespace]
+        B --> C[Compute SHA256 Hash]
+        C --> D{Duplicate Exists in Namespace?}
+
+        D -->|Yes| E[Stop Ingestion - Already Exists]
+        D -->|No| F[Extract Text using PyMuPDF]
+
+        F --> G[Clean and Preprocess Text]
+        G --> H[Chunk Text - Size 500 - Overlap 60]
+
+        H --> I[Attach Metadata: page, source, hash, namespace]
+        I --> J[Upsert to Pinecone using llama-text-embed-v2]
+    end
+
+
+    %% =========================
+    %% Query Pipeline
+    %% =========================
+    subgraph Query Pipeline
+
+        K[User Query via /query] --> L[Select Namespace]
+        L --> M[Validate Request]
+
+        M --> N{Rerank Enabled?}
+
+        N -->|No| O[Semantic Retrieval - Top 5 Chunks]
+        N -->|Yes| P[Retrieval and Reranking - Top 4 Chunks]
+
+        O --> Q[Build Context with Citations]
+        P --> Q
+
+        Q --> R[LLM Generation using ChatGroq gpt-oss-120b]
+        R --> S[Final Response with Citations]
+    end
+
+
+    %% =========================
+    %% Storage Link
+    %% =========================
+    J -. Namespace Isolated Storage and Search .-> O
+    J -. Namespace Isolated Storage and Search .-> P
+```
 
 ## ✨ Key Highlights
 
